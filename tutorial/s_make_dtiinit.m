@@ -25,7 +25,7 @@ resolution = 4;
 % Build the new file name for the dt6 folder
 res    = num2str(resolution); 
 idx    = strfind(res,'.'); 
-if ~isempty(idx), res(2) ='p';end
+if ~isempty(idx), res(idx) ='p';end
 
 % File name of the input diffusion data
 %dwi_raw_file  = 'dwi_data_b2000_1p25mm';
@@ -75,6 +75,7 @@ if ~exist(afqFolder,'dir'), mkdir(afqFolder); end
 for iif = 1:length(fascicles)
     fgWrite(fascicles(iif),    fullfile(afqFolder,[fascicles(iif).name,'_uncleaned']),'mat')
 end
+toc
 
 %% Clean the fibers
 % We apply the same trhesholds to all fiber
@@ -90,16 +91,23 @@ for iif = 1:length(fascicles)
 fgWrite(fascicles1(iif),    fullfile(afqFolder,fascicles(iif).name),'mat')
 end
 
-% Save the segemented fascicles and the indicses into the Mfiber
+% Save the segemented fascicles and the indices into the Mfiber
 classFile2Save = fullfile(afqFolder,'tracts_classification_indices');
 save(classFile2Save,'fg_classified','classification','fascicles1')
 
 %% Build the LiFE model.
 dwiFile =  '/home/frk/2t1/fp96_data_variability/dt6_run01_fliprot__4mm/run01_fliprot_aligned_trilin_aligned_trilin.nii.gz';
 feFileName = ['fe_structure_',dt6_dir_name];
-tic, feFolder = fullfile(dataDir,dt6_dir_name, 'LiFE');
+
+tic
+
+% folder to save LiFE outputs
+% make this folder if it does not exist
+feFolder = fullfile(dirData,dt6_dirName, 'LiFE');
 if ~exist(feFolder,'dir'), mkdir(feFolder); end
+
 fe = feConnectomeInit(dwiFile,fg,feFileName,feFolder,dwiFile,t1FileName);
 fe = feSet(fe,'fit',feFitModel(feGet(fe,'mfiber'),feGet(fe,'dsigdemeaned'),'bbnnls'));
+toc
 
 %% End

@@ -69,7 +69,7 @@ tic, fibersFolder = 'mrtrix_fascicles';
 if ~exist(fibersFolder,'dir'), mkdir(fibersFolder); end
 dt6_file = fullfile(dataDir,dt6_dir_name,'dti96trilin','dt6.mat');
 nFascicles = 120000;
-tractographyType = {'prob'}; % THis can be probabilistic and deterministic
+tractographyType = {'prob'}; % This can be probabilistic and deterministic
 lmax = mrtrix_findlmax(48); % Make sure that the number of directiosn here is set to the acquired number of directions
-[status, ~, fg] = feTrack(tractogrpahyType, dt6_file,fibersFolder,,nFascicles);
+[status, ~, fg] = feTrack(tractographyType, dt6_file,fibersFolder,nFascicles);
 toc
